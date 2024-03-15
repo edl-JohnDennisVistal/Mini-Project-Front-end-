@@ -1,9 +1,6 @@
 *{
     user-select: none;
 }
-.custom-color-gray-200{
-    background-color: #edf2f7;
-}
 .button-common{
     margin: 0 10px 0 0;
     border: 1px solid black;
@@ -24,9 +21,6 @@
 }
 #view{
     background-color: rgba(0, 128, 0, 0.603);
-}
-#edit{
-    background-color: rgba(0, 0, 255, 0.603);
 }
 #delete{
     background-color: rgba(255, 0, 0, 0.603);

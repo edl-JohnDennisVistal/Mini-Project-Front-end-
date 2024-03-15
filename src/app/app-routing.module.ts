@@ -5,6 +5,9 @@ import { RegistrationComponent } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { ProjectsComponent } from './projects/projects.component';
+import { AddProjectComponent } from './projects/add-project/add-project.component';
+import { ProjectViewComponent } from './projects/project-view/project-view.component';
 
 const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -12,6 +15,9 @@ const routes: Routes = [
     { path: 'register', component: RegistrationComponent },
     { path: 'profile/:id', component: UserProfileComponent },
     { path: 'admin/:id', component: AdminPanelComponent },
+    { path: 'projects', component: ProjectsComponent },
+    { path: 'projects/add', component: AddProjectComponent },
+    { path: 'projects/view/:id', component: ProjectViewComponent },
 ];
 
 @NgModule({

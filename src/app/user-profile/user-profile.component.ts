@@ -1,21 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { environment } from '../../../environment.development';
 import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Commons } from '../common/common.functions';
 import { ActivatedRoute } from '@angular/router';
-
-export interface UserData {
-    id: number;
-    name: string;
-    email: string;
-}
-
-const EXAMPLE_DATA: UserData[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Doe', email: 'jane@example.com' },
-    // Add more data as needed
-];
+import { MatTableDataSource } from '@angular/material/table';
+import { UserData } from '../admin-panel/admin-panel.component';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
     selector: 'app-user-profile',
@@ -28,7 +20,6 @@ export class UserProfileComponent implements OnInit {
 
     isEdit: boolean = false;
     displayedColumns: string[] = ['id', 'name', 'email'];
-    dataSource = EXAMPLE_DATA;
     editUserForm: FormGroup;
     first_name: string = '';
     last_name: string = '';
@@ -39,6 +30,11 @@ export class UserProfileComponent implements OnInit {
     date_of_birth: string = '';
     role: string = '';
     id: number;
+    rawData: any;
+    dataSource: any;
+
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+    @ViewChild(MatSort) sort: MatSort; 
 
     constructor(private http: HttpClient, private common: Commons, private route: ActivatedRoute) { }
 
@@ -46,6 +42,9 @@ export class UserProfileComponent implements OnInit {
         this.id = this.route.snapshot.params['id'];
         const url = `${environment.apiUrl}/auth/user/details/${this.id}`;
         this.http.get<any>(url).subscribe(data => {
+            this.rawData = data.projects;
+            this.dataSource = new MatTableDataSource<UserData>(this.rawData);
+            this.dataSource.paginator = this.paginator;
             const create = new Date(data.userDetails.created_at);
             const update = new Date(data.userDetails.updated_at);
             const options = { month: 'long', day: 'numeric', year: 'numeric' } as any;
@@ -78,6 +77,18 @@ export class UserProfileComponent implements OnInit {
 
     onCancel(){
         this.isEdit = false;
+    }
+
+    onAddProject(){
+    
+    }
+
+    onSaveProject(){
+
+    }
+
+    onCancelProject(){
+
     }
 
 }

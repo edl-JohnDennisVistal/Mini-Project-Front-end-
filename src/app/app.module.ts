@@ -17,6 +17,9 @@ import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 import { AuthInterceptorService } from './auth-interceptor.service';
 import { LoadingComponent } from './loading/loading.component';
 import { MatSortModule } from '@angular/material/sort';
+import { ProjectsComponent } from './projects/projects.component';
+import { AddProjectComponent } from './projects/add-project/add-project.component';
+import { ProjectViewComponent } from './projects/project-view/project-view.component';
 
 @NgModule({
     declarations: [
@@ -25,7 +28,10 @@ import { MatSortModule } from '@angular/material/sort';
         LoginComponent,
         UserProfileComponent,
         AdminPanelComponent,
-        LoadingComponent
+        LoadingComponent,
+        ProjectsComponent,
+        AddProjectComponent,
+        ProjectViewComponent
     ],
     imports: [
         BrowserModule,

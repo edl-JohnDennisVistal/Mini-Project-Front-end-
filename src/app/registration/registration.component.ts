@@ -37,7 +37,6 @@ export class RegistrationComponent implements OnInit {
             'gender': new FormControl(null, Validators.required),
             'age': new FormControl(this.age),
         });
-        
     }
 
     onInputChange(event: any){
