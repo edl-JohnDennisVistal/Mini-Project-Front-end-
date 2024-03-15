@@ -1,0 +1,160 @@
+<div class="flex items-center justify-center h-screen">
+    <div class="w-full max-w-lg">
+        <form class="max-w-md mx-auto flex-none" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+            <h1 class="text-4xl font-bold mb-5">
+                <span>Registration</span>
+                <small class="text-red-600 text-sm block bg-red-100" *ngIf="responseMessage.email">{{ responseMessage.email }}</small>
+                <small class="text-red-600 text-sm block bg-red-100" *ngIf="responseMessage.username">{{ responseMessage.username }}</small>
+            </h1>
+            <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="relative z-0 w-full mb-5 group">
+                    <input 
+                        type="text" 
+                        name="first_name" 
+                        id="first_name" 
+                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                        placeholder=" " 
+                        required 
+                        formControlName="first_name"
+                        (input)="onInputChange($event)"
+                    />
+                    <label for="first_name" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First Name</label>
+                    <!-- INFO -->
+                    <small class="text-red-600" *ngIf="registrationForm.get('first_name').hasError('required') && registrationForm.get('first_name').touched">First name is required.</small>
+                    <small class="text-red-600" *ngIf="registrationForm.get('first_name').hasError('specialChars')">First name must not contain special characters.</small>
+                </div>
+                <div class="relative z-0 w-full mb-5 group">
+                    <input 
+                        type="text" 
+                        name="last_name" 
+                        id="last_name" 
+                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                        placeholder=" " 
+                        required 
+                        formControlName="last_name"
+                        (input)="onInputChange($event)"
+                    />
+                    <label for="last_name" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Last Name</label>
+                    <!-- INFO -->
+                    <small class="text-red-600" *ngIf="registrationForm.get('last_name').hasError('required') && registrationForm.get('last_name').touched">Last name is required.</small>
+                    <small class="text-red-600" *ngIf="registrationForm.get('last_name').hasError('specialChars')">Last name must not contain special characters.</small>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="relative z-0 mb-5 group w-full">
+                    <div class="relative max-w-sm">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
+                        </div>
+                        <input 
+                            datepicker 
+                            type="date" 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                            placeholder="Select date"
+                            formControlName="date_of_birth"
+                            (input)="onInputChange($event)"
+                        >
+                    </div>
+                    <!-- INFO -->
+                    <small class="text-red-600" *ngIf="registrationForm.get('date_of_birth').hasError('required') && registrationForm.get('date_of_birth').touched">Date of birth is required.</small>
+                    <small class="text-red-600" *ngIf="registrationForm.get('date_of_birth').hasError('ageLimit')">Minimum age is 18.</small>
+                </div>
+                <div class="relative z-0 col-3 w-full mb-5 group">
+                    <input 
+                        type="email" 
+                        name="email" 
+                        id="email" 
+                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                        placeholder=" " 
+                        required 
+                        formControlName="email"
+                        (input)="onInputChange($event)"
+                    />
+                    <label for="email" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label>
+                    <!-- INFO -->
+                    <small class="text-red-600" *ngIf="registrationForm.get('email').hasError('required') && registrationForm.get('email').touched">Email is required.</small>
+                    <small class="text-red-600" *ngIf="registrationForm.get('email').hasError('email') && registrationForm.get('email').touched">Email must not contain special characters.</small>
+                </div>
+            </div>
+            <div class="relative z-0 w-full mb-5 group">
+                <input 
+                    type="text" 
+                    name="username" 
+                    id="username" 
+                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                    placeholder=" " 
+                    required 
+                    formControlName="username"
+                    (input)="onInputChange($event)"
+                />
+                <label for="username" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Username</label>
+                <!-- INFO -->
+                <small class="text-red-600" *ngIf="registrationForm.get('username').hasError('required') && registrationForm.get('username').touched">Username is required.</small>
+                <small class="text-red-600" *ngIf="registrationForm.get('username').hasError('specialChars')">Username must not contain special characters.</small>
+            </div>
+            <div class="relative z-0 w-full mb-5 group">
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="password" 
+                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                    placeholder=" " 
+                    required 
+                    formControlName="password"
+                    (input)="onInputChange($event)"
+                />
+                <label for="password" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                <!-- INFO -->
+                <small class="text-red-600" *ngIf="registrationForm.get('password').hasError('required') && registrationForm.get('password').touched">Password is required.</small>
+            </div>
+            <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="relative z-0 w-full mb-5 group">
+                    <label for="username" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Select Role</label>
+                    <select
+                        id="dropdown"
+                        formControlName="role"
+                        class="block rounded py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                        (input)="onInputChange($event)"
+                    >
+                        <option value="ROLE_ADMIN">Admin</option>
+                        <option value="ROLE_SUPERVISOR">Supervisor</option>
+                        <option value="ROLE_BASIC">Basic</option>
+                    </select>
+                    <!-- INFO -->
+                    <small class="text-red-600" *ngIf="registrationForm.get('role').hasError('required') && registrationForm.get('role').touched">Role is required.</small>
+                </div>
+                <div class="relative z-0 w-full mb-5 group">
+                    <select 
+                        type="text" 
+                        name="gender" 
+                        id="gender" 
+                        class="block rounded py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                        placeholder=" " 
+                        required 
+                        formControlName="gender"
+                        (input)="onInputChange($event)"
+                    >
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                    <label for="gender" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Gender</label>
+                    <!-- INFO -->
+                    <small class="text-red-600" *ngIf="registrationForm.get('gender').hasError('required') && registrationForm.get('gender').touched">Gender is required.</small>
+                </div>
+            </div>
+            <!-- age -->
+            <input type="hidden" id="age" formControlName="age" >
+            <button 
+                type="submit" 
+                class="text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2 py-2 text-center"
+                [disabled]="isButtonDisabled"
+                [ngClass]="{'bg-gray-300': isButtonDisabled, 'bg-blue-700 border hover:border-blue-800 hover:bg-blue-100 hover:text-black': !isButtonDisabled}"
+                *ngIf="!isSubmitted"
+                >Register
+            </button>
+            <app-loading *ngIf="isSubmitted"></app-loading>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+*{
+    user-select: none;
+}
+.custom-color-gray-200{
+    background-color: #edf2f7;
+}
+.button-common{
+    margin: 0 10px 0 0;
+    border: 1px solid black;
+    padding: 2.5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+.button-common:hover{
+    opacity: 0.8;
+}
+.text-center{
+    text-align: center;
+}
+.flex-custom{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#view{
+    background-color: rgba(0, 128, 0, 0.603);
+}
+#edit{
+    background-color: rgba(0, 0, 255, 0.603);
+}
+#delete{
+    background-color: rgba(255, 0, 0, 0.603);
+}

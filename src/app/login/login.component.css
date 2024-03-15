@@ -1,0 +1,8 @@
+input.ng-invalid.ng-touched {
+    border-color: red;
+    background-color: rgba(238, 202, 202, 0.527);
+    border-radius: 10px;
+}
+*{
+    user-select: none;
+}
