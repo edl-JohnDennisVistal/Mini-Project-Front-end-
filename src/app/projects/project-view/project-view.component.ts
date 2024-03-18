@@ -16,13 +16,14 @@ import { environment } from '../../../../environment.development';
 export class ProjectViewComponent implements OnInit {
 
     dataSource: any;
-    displayedColumns = ['id', 'member']
+    displayedColumns = ['id', 'member', 'actions']
     project_id: number;
     owner: string;
     start_date: string;
     end_date: string;
     project: string;
     users: string[];
+    members: [];
     
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -37,10 +38,13 @@ export class ProjectViewComponent implements OnInit {
             this.end_date = params.end
             this.project = params.project
         })
-        const url = `${environment.apiUrl}/auth/fetch/project/user/${this.project_id}`;
-        this.http.get<any>(url).subscribe(data => {
-            this.users = data.response.users;
-            this.dataSource = new MatTableDataSource<UserData>(data.response);
+        const urlPrjMem = `${environment.apiUrl}/auth/project/members/${this.project_id}`;
+        this.http.get<any>(urlPrjMem).subscribe(data => {
+            this.members = data.response[0].users;
+        })
+        const allUsers = `${environment.apiUrl}/auth/admin/panel`;
+        this.http.get<any>(allUsers).subscribe(data => {
+            this.dataSource = new MatTableDataSource<UserData>(data.data);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
         })
@@ -51,6 +55,19 @@ export class ProjectViewComponent implements OnInit {
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
-    
+    onAdd(id: any) {
+        const urlPrjMem = `${environment.apiUrl}/auth/project/members/add`;
+        const req = {
+            user_id: id, 
+            project_id: this.project_id
+        }
+        this.http.post<any>(urlPrjMem, req).subscribe(data => {
+            const urlPrjMem = `${environment.apiUrl}/auth/project/members/${this.project_id}`;
+            this.http.get<any>(urlPrjMem).subscribe(data => {
+                console.log(';xx')
+                this.members = data.response[0].users;
+            })
+        })
+    }
 
 }

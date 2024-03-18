@@ -58,7 +58,12 @@
             </div>
         </div>
         <div>
-            <span class="mr-5" *ngFor="let skill of userSkills">{{ skill.skill }}</span>
+            <div class="mb-5">
+                <div *ngFor="let skill of userSkills" class="bg-gray-200 px-3 py-1 rounded-full inline-block my-1 mr-2">
+                    {{ skill.skill }}
+                    <button class="ml-2 text-gray-500 rounded-full bg-gray-400 px-1" (click)="onDelete(user.id)">X</button>
+                </div>
+            </div>
         </div>
     </div>
     <!-- app.component.html -->
