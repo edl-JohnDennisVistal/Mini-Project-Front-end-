@@ -20,7 +20,7 @@ export class UserProfileComponent implements OnInit {
 
     isEdit: boolean = false;
     displayedColumns: string[] = ['id', 'name', 'email'];
-    editUserForm: FormGroup;
+    skillsForm: FormGroup;
     first_name: string = '';
     last_name: string = '';
     age: number = null;
@@ -32,6 +32,8 @@ export class UserProfileComponent implements OnInit {
     id: number;
     rawData: any;
     dataSource: any;
+    skills: string[] = [];
+    userSkills: string[] = [];
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort; 
@@ -41,6 +43,8 @@ export class UserProfileComponent implements OnInit {
     ngOnInit(){
         this.id = this.route.snapshot.params['id'];
         const url = `${environment.apiUrl}/auth/user/details/${this.id}`;
+        const urlSkills = `${environment.apiUrl}/auth/skills`;
+        const urlUserSkills = `${environment.apiUrl}/auth/user/skills/${this.id}`;
         this.http.get<any>(url).subscribe(data => {
             this.rawData = data.projects;
             this.dataSource = new MatTableDataSource<UserData>(this.rawData);
@@ -59,11 +63,14 @@ export class UserProfileComponent implements OnInit {
             this.date_of_birth = data.userDetails.user_details[0].date_of_birth
             this.role = data.userDetails.roles[0].role
         })
-        this.editUserForm = new FormGroup({
-            'first_name': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
-            'last_name': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
-            'age': new FormControl(null, [Validators.required, Validators.min(1), Validators.max(100)]),
-            'gender': new FormControl(null, Validators.required),
+        this.http.get<any>(urlSkills).subscribe(data => {
+            this.skills = data.response;
+        })
+        this.http.get<any>(urlUserSkills).subscribe(data => {
+            this.userSkills = data.response;
+        })
+        this.skillsForm = new FormGroup({
+            'skill': new FormControl(null, Validators.required),
         })
     }
 
@@ -75,20 +82,19 @@ export class UserProfileComponent implements OnInit {
         this.isEdit = true;
     }
 
-    onCancel(){
-        this.isEdit = false;
-    }
-
-    onAddProject(){
-    
-    }
-
-    onSaveProject(){
-
-    }
-
-    onCancelProject(){
-
+    onAddSkill(){
+        const skill = this.skillsForm.controls['skill'].value;  
+        const url = `${environment.apiUrl}/auth/skill/add`;
+        const urlSkills = `${environment.apiUrl}/auth/skills`;
+        const urlUserSkills = `${environment.apiUrl}/auth/user/skills/${this.id}`;
+        this.http.post<any>(url, { skill: skill }).subscribe(data => {
+            this.http.get<any>(urlSkills).subscribe(data => {
+                this.skills = data.response;
+            })
+            this.http.get<any>(urlUserSkills).subscribe(data => {
+                this.userSkills = data.response;
+            })
+        })
     }
 
 }

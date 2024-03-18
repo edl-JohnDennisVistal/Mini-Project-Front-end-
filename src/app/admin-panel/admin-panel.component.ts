@@ -37,8 +37,7 @@ export class AdminPanelComponent implements OnInit {
     }
 
     fetchData() {
-        this.id = localStorage.getItem('user_id');
-        const url = `${environment.apiUrl}/auth/admin-panel/${this.id}`;
+        const url = `${environment.apiUrl}/auth/admin/panel`;
         this.http.get<any>(url).subscribe(data => {
             this.rawData = data.data;
             this.dataSource = new MatTableDataSource<UserData>(this.rawData);
@@ -54,7 +53,7 @@ export class AdminPanelComponent implements OnInit {
     deleteUser(id: string) {
         this.isDeleting = true;
         this.userId = id;
-        this.http.get<any>(`${environment.apiUrl}/auth/admin-panel/delete/${id}`).subscribe(
+        this.http.get<any>(`${environment.apiUrl}/auth/admin/panel/delete/${id}`).subscribe(
             (response) => {
                 this.fetchData();
             },

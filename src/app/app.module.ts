@@ -20,6 +20,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { ProjectsComponent } from './projects/projects.component';
 import { AddProjectComponent } from './projects/add-project/add-project.component';
 import { ProjectViewComponent } from './projects/project-view/project-view.component';
+import { EditProjectComponent } from './projects/edit-project/edit-project.component';
+import { UserEditComponent } from './user-profile/user-edit/user-edit.component';
 
 @NgModule({
     declarations: [
@@ -31,7 +33,9 @@ import { ProjectViewComponent } from './projects/project-view/project-view.compo
         LoadingComponent,
         ProjectsComponent,
         AddProjectComponent,
-        ProjectViewComponent
+        ProjectViewComponent,
+        EditProjectComponent,
+        UserEditComponent
     ],
     imports: [
         BrowserModule,

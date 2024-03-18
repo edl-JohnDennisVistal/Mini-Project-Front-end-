@@ -2,81 +2,65 @@
     <h1 class="text-4xl font-bold mb-10">User Profile</h1>
     <div class="flex justify-between">
         <h2 class="text-2xl font-bold mb-5">User Details</h2>
-        <button *ngIf="!isEdit" (click)="onEdit()" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        <button routerLink="/profile/edit" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
             Update profile
         </button>
-        <div *ngIf="isEdit">
-            <button (click)="onSubmit()" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                Save changes
-            </button>
-            <button (click)="onCancel()" type="button" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                Cancel
-            </button>
-        </div>
     </div>
     <div class="container max-w-full">
-        <form [formGroup]="editUserForm">
-            <table class="table-fix w-full mb-10">
-                <tbody>
-                    <tr>
-                        <td class="w-1/4">First name:</td>
-                        <td class="w-1/2" *ngIf="!isEdit">{{ first_name }}</td>
-                        <input type="text" formControlName="first_name" class="w-1/2 rounded my-1 bg-gray-50 border-b-2 border-r-2 border-gray-300" *ngIf="isEdit" placeholder="{{ first_name }}"/>
-                    </tr>
-                    <tr>
-                        <td class="w-1/4">Last name:</td>
-                        <td class="w-1/2" *ngIf="!isEdit">{{ last_name }}</td>
-                        <input type="text" formControlName="last_name" class="w-1/2 rounded my-1 bg-gray-50 border-b-2 border-r-2 border-gray-300" *ngIf="isEdit" placeholder="{{ last_name }}"/>
-                    </tr>
-                    <tr>
-                        <td class="w-1/4">Birthday:</td>
-                        <td class="w-1/2" *ngIf="!isEdit">{{ date_of_birth }}</td>
-                        <div class="relative w-1/2" *ngIf="isEdit">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                                </svg>
-                            </div>
-                            <input 
-                                datepicker 
-                                type="date" 
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                                placeholder="Select date"
-                                formControlName="date_of_birth"
-                            >
-                        </div>                    
-                    </tr>
-                    <tr>
-                        <td class="w-1/4">Age:</td>
-                        <td class="w-1/2">{{ age }}</td>
-                    </tr>
-                    <tr>
-                        <td class="w-1/4">Gender:</td>
-                        <td class="w-1/2" *ngIf="!isEdit">{{ gender }}</td>
-                        <td [hidden]="!isEdit">
-                            <select formControlName="gender" class="w-1/2 rounded my-1 bg-gray-50 border-b-2 border-r-2 border-gray-300" [value]="gender">
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="w-1/4 text-gray-400">Account level:</td>
-                        <td class="w-1/2 text-gray-400">{{ role }}</td>
-                    </tr>
-                    <tr>
-                        <td class="w-1/4 text-gray-400">Account created on:</td>
-                        <td class="w-1/2 text-gray-400">{{ created_at }}</td>
-                    </tr>
-                    <tr>
-                        <td class="w-1/4 text-gray-400">Account modified on:</td>
-                        <td class="w-1/2 text-gray-400">{{ updated_at }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
+        <table class="table-fix w-full mb-10">
+            <tbody>
+                <tr>
+                    <td class="w-1/4">First name:</td>
+                    <td class="w-1/2">{{ first_name }}</td>
+                </tr>
+                <tr>
+                    <td class="w-1/4">Last name:</td>
+                    <td class="w-1/2">{{ last_name }}</td>
+                </tr>
+                <tr>
+                    <td class="w-1/4">Birthday:</td>
+                    <td class="w-1/2">{{ date_of_birth }}</td>                   
+                </tr>
+                <tr>
+                    <td class="w-1/4">Age:</td>
+                    <td class="w-1/2">{{ age }}</td>
+                </tr>
+                <tr>
+                    <td class="w-1/4">Gender:</td>
+                    <td class="w-1/2">{{ gender }}</td>
+                </tr>
+                <tr>
+                    <td class="w-1/4 text-gray-400">Account level:</td>
+                    <td class="w-1/2 text-gray-400">{{ role }}</td>
+                </tr>
+                <tr>
+                    <td class="w-1/4 text-gray-400">Account created on:</td>
+                    <td class="w-1/2 text-gray-400">{{ created_at }}</td>
+                </tr>
+                <tr>
+                    <td class="w-1/4 text-gray-400">Account modified on:</td>
+                    <td class="w-1/2 text-gray-400">{{ updated_at }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    
+    <div class="my-5">
+        <div class="flex">
+            <h1 class="text-2xl font-bold">Skills</h1>
+            <div class="flex ml-10">
+                <form [formGroup]="skillsForm">
+                    <select formControlName="skill">
+                        <option value="" selected>Add Skill</option>
+                        <option *ngFor="let skill of skills" value="{{ skill.id }}">{{ skill.skill }}</option>
+                    </select>
+                    <button type="submit" (click)="onAddSkill()">Add</button>
+                </form>
+            </div>
+        </div>
+        <div>
+            <span class="mr-5" *ngFor="let skill of userSkills">{{ skill.skill }}</span>
+        </div>
+    </div>
     <!-- app.component.html -->
     <h2 class="text-2xl font-bold mb-5">User Tasks</h2>
     <table mat-table [dataSource]="dataSource">

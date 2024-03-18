@@ -1,19 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Commons } from '../common/common.functions';
+import { Commons } from '../../common/common.functions';
 import { Router } from '@angular/router';
-import { Observable, catchError, map, throwError } from 'rxjs';
-import { environment } from '../../../environment.development';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, map, throwError } from 'rxjs';
+import { environment } from '../../../../environment.development';
 
 @Component({
-    selector: 'app-registration',
-    templateUrl: './registration.component.html',
-    styleUrl: './registration.component.css',
+    selector: 'app-user-edit',
+    templateUrl: './user-edit.component.html',
+    styleUrl: './user-edit.component.css',
     providers: [Commons]
 })
 
-export class RegistrationComponent implements OnInit {
+export class UserEditComponent implements OnInit {
 
     username = '';
     email = '';
@@ -23,28 +23,44 @@ export class RegistrationComponent implements OnInit {
     isSubmitted = false; //for loading component
     isButtonDisabled = true;
     responseMessage: any = '';
-    registrationForm: FormGroup;
+    editForm: FormGroup;
 
     constructor(private common: Commons, private router: Router, private http: HttpClient) { }
 
     ngOnInit(){
-        this.registrationForm = new FormGroup({
+        const url = `${environment.apiUrl}/auth/profile/self`;
+        // Initialize editForm with default values
+        this.editForm = new FormGroup({
             'username': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
             'first_name': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
             'last_name': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
             'date_of_birth': new FormControl(null, Validators.required, this.ageLimit.bind(this)),
             'email': new FormControl(null, [Validators.required, Validators.email]),
-            'password': new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
+            'password': new FormControl('********', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
             'role': new FormControl(null, [Validators.required]),
             'gender': new FormControl(null, Validators.required),
             'age': new FormControl(this.age),
         });
+        this.http.get<any>(url).subscribe(data => {
+            const dateObject = new Date(data.data.user_details[0].date_of_birth);
+            const formattedDate = dateObject.toISOString().slice(0, 10);
+            this.editForm.patchValue({
+                'username': data.data.username,
+                'first_name': data.data.user_details[0].first_name,
+                'last_name': data.data.user_details[0].last_name,
+                'date_of_birth': formattedDate,
+                'email': data.data.user_details[0].email,
+                'role': data.data.roles[0].role,
+                'gender': data.data.user_details[0].gender,
+            });
+        });
+
     }
 
     onInputChange(event: any){
         //important to timeout. The select dropdown has delay in it.
         setTimeout(() => {
-            if (this.registrationForm.valid) {
+            if (this.editForm.valid) {
                 this.isButtonDisabled = false;
             } else {
                 this.isButtonDisabled = true;
@@ -65,14 +81,14 @@ export class RegistrationComponent implements OnInit {
     }
     
     onSubmit() {
-        if (this.registrationForm.valid) {
-            this.registrationForm.patchValue({ age: this.age });
+        if (this.editForm.valid) {
+            this.editForm.patchValue({ age: this.age });
             this.responseMessage = '';
             this.isSubmitted = true;
-            this.registerUser(this.registrationForm.value).subscribe(
+            this.registerUser(this.editForm.value).subscribe(
                 response => {
                     this.responseMessage = response;
-                    this.router.navigate(['/login']);
+                    this.router.navigate(['/profile/' + localStorage.getItem('user_id')]);
                 },
                 error => {
                     console.error('Error during registration:', error);
@@ -86,8 +102,8 @@ export class RegistrationComponent implements OnInit {
     }
 
     registerUser(req: FormData): Observable<any> {
-        const url = `${environment.apiUrl}/auth/register`;
-        return this.http.post<any>(url, req).pipe(
+        const url = `${environment.apiUrl}/auth/update/user/details`;
+        return this.http.put<any>(url, req).pipe(
             map(response => {
                 return response;
             }),
@@ -106,5 +122,5 @@ export class RegistrationComponent implements OnInit {
         return throwError('Something went wrong. Please try again.');
     }
 
-      
+
 }

@@ -2,7 +2,6 @@
     user-select: none;
 }
 .button-common{
-    margin: 0 10px 0 0;
     border: 1px solid black;
     padding: 2.5px 10px;
     border-radius: 5px;
@@ -27,4 +26,7 @@
 }
 .dark-gray{
     background-color: #ebebeb !important;
+}
+#edit{
+    background-color: rgba(0, 0, 255, 0.603);
 }
