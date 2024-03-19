@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Commons } from '../common/common.functions';
+import { AuthService } from '../auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, catchError, map, throwError } from 'rxjs';
-import { environment } from '../../../environment.development';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-login',
@@ -22,7 +21,7 @@ export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     isButtonDisabled: boolean = true;
 
-    constructor(private common: Commons, private router: Router, private http: HttpClient) { }
+    constructor(private common: Commons, private authservice: AuthService, private router: Router ) { }
 
     ngOnInit(): void { 
         /* needed to be initialized first before the component */
@@ -51,48 +50,19 @@ export class LoginComponent implements OnInit {
         if(this.loginForm.valid){
             this.isSubmitted = true;
             this.responseMessage = "";
-            this.logIn(this.loginForm.value).subscribe(
+            const req = this.loginForm.value;
+            this.authservice.login(req).subscribe(
                 response => {
-                    this.isSubmitted = false;
                     localStorage.setItem('access_token', response.access_token.token);
                     localStorage.setItem('user_id', response.access_token.user.id);
-                    this.router.navigate(['/profile/' + response.access_token.user.id]);
-                },
-                error => {
-                    console.error('Error during registration:', error);
+                    this.router.navigate(['/home']);
+                }, 
+                (error: any) => {
+                    this.responseMessage = { message: error };
                     this.isSubmitted = false;
-                    if (error) {
-                        this.responseMessage = error;
-                    }
                 }
             );
         }
-    }
-
-    logIn(req: FormData): Observable<any> {
-        const url = `${environment.apiUrl}/auth/login`;
-        return this.http.post<any>(url, req).pipe(
-            map(response => {
-                return response;
-            }),
-            catchError(this.handleErrors)
-        );
-    }
-
-    private handleErrors(error: HttpErrorResponse): Observable<any> {
-        if (error.status === 422) {
-            const validationErrors = error.error.errors;
-            return throwError(validationErrors);
-        } 
-        else if (error.status === 401) {
-            const validationErrors = error.error;
-            return throwError(validationErrors);
-        }
-        else {
-            console.error('Unexpected Error:', error);
-        }
-
-        return throwError('Something went wrong. Please try again.');
     }
 
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, viewChild } from '@angular/core';
 import { environment } from '../../../environment.development';
-import { HttpClient } from '@angular/common/http';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserData } from '../admin-panel/admin-panel.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
+import { ApiService } from '../services/api.service';
 
 @Component({
     selector: 'app-projects',
@@ -15,28 +15,32 @@ import { Router } from '@angular/router';
 
 export class ProjectsComponent implements OnInit {
 
-    displayedColumns: string[] = ['id', 'user', 'project', 'start_date', 'end_date', 'actions'];
+    displayedColumns: string[] = ['id', 'user', 'project', 'start_date', 'end_date', 'description', 'actions'];
     dataSource: any;
     rawData: any;
     userId = localStorage.getItem('user_id');
+
+    private urlFetchProjects = `${environment.apiUrl}/auth/fetch/projects`;
+    private urlProjectDelete = `${environment.apiUrl}/auth/project/delete/`;
     
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
-    constructor(private http: HttpClient, private router: Router) {  }
+    constructor(private router: Router, private apiservice: ApiService) {  }
 
     ngOnInit(): void { 
         this.fetchData();
     }
 
     fetchData() {
-        const url = `${environment.apiUrl}/auth/fetch/projects`;
-        this.http.get<any>(url).subscribe(data => {
-            this.rawData = data.response;
-            this.dataSource = new MatTableDataSource<UserData>(this.rawData);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-        })
+        this.apiservice.getData<any>(this.urlFetchProjects).subscribe(
+            response => {
+                this.rawData = response.response;
+                this.dataSource = new MatTableDataSource<UserData>(this.rawData);
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
+            }
+        )
     }
 
     onSearch(event: any) {
@@ -55,11 +59,11 @@ export class ProjectsComponent implements OnInit {
     }   
 
     deleteUser(id: number){
-        const url = `${environment.apiUrl}/auth/project/delete/${id}`;
-        this.http.delete<any>(url).subscribe(data => {
-            console.log(data)
-            this.fetchData();
-        })
+        this.apiservice.deleteData<any>(this.urlProjectDelete + id).subscribe(
+            response => {
+                this.fetchData();
+            }
+        )
     }
 
 }

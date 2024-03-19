@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Commons } from '../../common/common.functions';
 import { Router } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environment.development';
+import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-user-edit',
@@ -25,10 +25,12 @@ export class UserEditComponent implements OnInit {
     responseMessage: any = '';
     editForm: FormGroup;
 
-    constructor(private common: Commons, private router: Router, private http: HttpClient) { }
+    private url = `${environment.apiUrl}/auth/update/user/details`;
+    private urlDefVal = `${environment.apiUrl}/auth/profile/self`;
+
+    constructor(private common: Commons, private router: Router, private apiservice: ApiService) { }
 
     ngOnInit(){
-        const url = `${environment.apiUrl}/auth/profile/self`;
         // Initialize editForm with default values
         this.editForm = new FormGroup({
             'username': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
@@ -41,19 +43,21 @@ export class UserEditComponent implements OnInit {
             'gender': new FormControl(null, Validators.required),
             'age': new FormControl(this.age),
         });
-        this.http.get<any>(url).subscribe(data => {
-            const dateObject = new Date(data.data.user_details[0].date_of_birth);
-            const formattedDate = dateObject.toISOString().slice(0, 10);
-            this.editForm.patchValue({
-                'username': data.data.username,
-                'first_name': data.data.user_details[0].first_name,
-                'last_name': data.data.user_details[0].last_name,
-                'date_of_birth': formattedDate,
-                'email': data.data.user_details[0].email,
-                'role': data.data.roles[0].role,
-                'gender': data.data.user_details[0].gender,
-            });
-        });
+        this.apiservice.getData<any>(this.urlDefVal).subscribe(
+            response => {
+                const dateObject = new Date(response.data.user_details[0].date_of_birth);
+                const formattedDate = dateObject.toISOString().slice(0, 10);
+                this.editForm.patchValue({
+                    'username': response.data.username,
+                    'first_name': response.data.user_details[0].first_name,
+                    'last_name': response.data.user_details[0].last_name,
+                    'date_of_birth': formattedDate,
+                    'email': response.data.user_details[0].email,
+                    'role': response.data.roles[0].role,
+                    'gender': response.data.user_details[0].gender,
+                });
+            }
+        )
 
     }
 
@@ -85,9 +89,9 @@ export class UserEditComponent implements OnInit {
             this.editForm.patchValue({ age: this.age });
             this.responseMessage = '';
             this.isSubmitted = true;
-            this.registerUser(this.editForm.value).subscribe(
+            const req = this.editForm.value;
+            this.apiservice.putData<any>(this.url, req).subscribe(
                 response => {
-                    this.responseMessage = response;
                     this.router.navigate(['/profile/' + localStorage.getItem('user_id')]);
                 },
                 error => {
@@ -100,27 +104,5 @@ export class UserEditComponent implements OnInit {
             );
         }
     }
-
-    registerUser(req: FormData): Observable<any> {
-        const url = `${environment.apiUrl}/auth/update/user/details`;
-        return this.http.put<any>(url, req).pipe(
-            map(response => {
-                return response;
-            }),
-            catchError(this.handleErrors)
-        );
-    }
-
-    private handleErrors(error: HttpErrorResponse): Observable<any> {
-        if (error.status === 422) {
-            const validationErrors = error.error.errors;
-            return throwError(validationErrors);
-        } else {
-            console.error('Unexpected Error:', error);
-        }
-
-        return throwError('Something went wrong. Please try again.');
-    }
-
 
 }

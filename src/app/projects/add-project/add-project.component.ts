@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { environment } from '../../../../environment.development';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-add-project',
@@ -14,7 +14,9 @@ export class AddProjectComponent implements OnInit {
 
     projectForm: FormGroup;
 
-    constructor(private http: HttpClient, private router: Router) { }
+    private urlAddProject = `${environment.apiUrl}/auth/add/project`;
+
+    constructor(private apiservice: ApiService, private router: Router) { }
 
     ngOnInit(): void {
         this.projectForm = new FormGroup({
@@ -55,12 +57,11 @@ export class AddProjectComponent implements OnInit {
     onSubmit() {
         const req = this.projectForm.value;
         req.user_id = localStorage.getItem('user_id');
-        const url = `${environment.apiUrl}/auth/add/project`;
-        this.http.post<any>(url, req).subscribe(data => {
-            if(data.response) {
+        this.apiservice.postData<any>(this.urlAddProject, req).subscribe(
+            data => {
                 this.router.navigate(['/projects']);
             }
-        })
+        )
     }
 
 }

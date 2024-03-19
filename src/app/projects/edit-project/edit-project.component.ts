@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../../environment.development';
+import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-edit-project',
@@ -20,7 +20,7 @@ export class EditProjectComponent implements OnInit {
     end_date: string;
     description: string;
 
-    constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+    constructor(private apiservice: ApiService, private router: Router, private route: ActivatedRoute) {
         this.project_name = this.route.snapshot.queryParams['project'];
         this.start_date = this.route.snapshot.queryParams['start'];
         this.end_date = this.route.snapshot.queryParams['end'];
@@ -74,7 +74,7 @@ export class EditProjectComponent implements OnInit {
         const req = this.projectForm.value;
         req.user_id = localStorage.getItem('user_id');
         const url = `${environment.apiUrl}/auth/edit/project`;
-        this.http.put<any>(url, req).subscribe(data => {
+        this.apiservice.putData<any>(url, req).subscribe(data => {
             if(data.response) {
                 this.router.navigate(['/projects']);
             }

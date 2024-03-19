@@ -4,6 +4,7 @@ import { environment } from '../../../environment.development';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { ApiService } from '../services/api.service';
 
 export interface UserData {
     id: number;
@@ -25,26 +26,30 @@ export class AdminPanelComponent implements OnInit {
     dropdownOpen = false;
     id: string;
     isDeleting: boolean = false;
-    userId: string;                                //this is for loading delete button
+    userId: string;//this is for loading delete button. If not an owner of account cant delete.
+
+    private urlAdminPanel = `${environment.apiUrl}/auth/admin/panel`;
+    private urlDeleteUser = `${environment.apiUrl}/auth/admin/panel/delete/`;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort; 
 
-    constructor(private http: HttpClient) { }
+    constructor(private apiservices: ApiService) { }
 
     ngOnInit(): void {
         this.fetchData();
     }
 
     fetchData() {
-        const url = `${environment.apiUrl}/auth/admin/panel`;
-        this.http.get<any>(url).subscribe(data => {
-            this.rawData = data.data;
-            this.dataSource = new MatTableDataSource<UserData>(this.rawData);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.isDeleting = false;
-        })
+        this.apiservices.getData<any>(this.urlAdminPanel).subscribe(
+            (response) => {
+                this.rawData = response.data;
+                this.dataSource = new MatTableDataSource<UserData>(this.rawData);
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
+                this.isDeleting = false;
+            }
+        )
     }
 
     /** 
@@ -53,7 +58,7 @@ export class AdminPanelComponent implements OnInit {
     deleteUser(id: string) {
         this.isDeleting = true;
         this.userId = id;
-        this.http.get<any>(`${environment.apiUrl}/auth/admin/panel/delete/${id}`).subscribe(
+        this.apiservices.deleteData<any>(this.urlDeleteUser + id).subscribe(
             (response) => {
                 this.fetchData();
             },

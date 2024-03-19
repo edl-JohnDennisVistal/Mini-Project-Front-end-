@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -6,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { UserData } from '../../admin-panel/admin-panel.component';
 import { environment } from '../../../../environment.development';
+import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-project-view',
@@ -16,7 +16,7 @@ import { environment } from '../../../../environment.development';
 export class ProjectViewComponent implements OnInit {
 
     dataSource: any;
-    displayedColumns = ['id', 'member', 'actions']
+    displayedColumns = ['id', 'member', 'task', 'actions']
     project_id: number;
     owner: string;
     start_date: string;
@@ -24,11 +24,20 @@ export class ProjectViewComponent implements OnInit {
     project: string;
     users: string[];
     members: [];
+    isAdmin: boolean = false;
+    discription: string = " ";
+
+    private urlProjectMember = `${environment.apiUrl}/auth/project/members/`;
+    private urlAllUsers = `${environment.apiUrl}/auth/admin/panel`;
+    private urlProjectAddMember = `${environment.apiUrl}/auth/project/members/add`;
+    private urlAdminChecker = `${environment.apiUrl}/auth/check/admin`;
+    private urlProjectDescription = `${environment.apiUrl}/auth/project/description/`;
+    private urlDeleteMember = `${environment.apiUrl}/auth/project/members/delete/`;
     
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(private route: ActivatedRoute, private http: HttpClient){}
+    constructor(private route: ActivatedRoute, private apiservice: ApiService){}
 
     ngOnInit(): void {
         this.route.queryParams.subscribe(params => {
@@ -38,16 +47,10 @@ export class ProjectViewComponent implements OnInit {
             this.end_date = params.end
             this.project = params.project
         })
-        const urlPrjMem = `${environment.apiUrl}/auth/project/members/${this.project_id}`;
-        this.http.get<any>(urlPrjMem).subscribe(data => {
-            this.members = data.response[0].users;
-        })
-        const allUsers = `${environment.apiUrl}/auth/admin/panel`;
-        this.http.get<any>(allUsers).subscribe(data => {
-            this.dataSource = new MatTableDataSource<UserData>(data.data);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-        })
+        this.checkAdmin();
+        this.getMembers();
+        this.getAllUsers();
+        this.getDiscription();
     }
 
     onSearch(event: any) {
@@ -56,18 +59,60 @@ export class ProjectViewComponent implements OnInit {
     }
 
     onAdd(id: any) {
-        const urlPrjMem = `${environment.apiUrl}/auth/project/members/add`;
         const req = {
             user_id: id, 
             project_id: this.project_id
         }
-        this.http.post<any>(urlPrjMem, req).subscribe(data => {
-            const urlPrjMem = `${environment.apiUrl}/auth/project/members/${this.project_id}`;
-            this.http.get<any>(urlPrjMem).subscribe(data => {
-                console.log(';xx')
+        this.apiservice.postData(this.urlProjectAddMember, req).subscribe(
+            data => {
+                this.getMembers();
+            }
+        )
+    }
+
+    getMembers(){
+        this.apiservice.getData<any>(this.urlProjectMember + this.project_id).subscribe(
+            data => {
                 this.members = data.response[0].users;
-            })
-        })
+            }
+        )
+    }
+
+    getAllUsers(){
+        this.apiservice.getData<any>(this.urlAllUsers).subscribe(
+            data => {
+                console.log(data)
+                this.dataSource = new MatTableDataSource<UserData>(data.data);
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
+            }
+        )
+    }
+
+    checkAdmin() {
+        this.apiservice.getData<any>(this.urlAdminChecker).subscribe(
+            data => {
+                if(data.response) {
+                    this.isAdmin = true;
+                }
+            }
+        )
+    }
+
+    getDiscription() {
+        this.apiservice.getData<any>(this.urlProjectDescription + this.project_id).subscribe(
+            data => {
+                this.discription = data;
+            }
+        )
+    }
+
+    onDelete($id: number) {
+        this.apiservice.deleteData<any>(this.urlDeleteMember + $id).subscribe(
+            data => {
+                this.getMembers();
+            }
+        )
     }
 
 }

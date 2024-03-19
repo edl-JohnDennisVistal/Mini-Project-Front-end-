@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Commons } from '../common/common.functions';
 import { Router } from '@angular/router';
-import { Observable, catchError, map, throwError } from 'rxjs';
 import { environment } from '../../../environment.development';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-registration',
@@ -24,12 +24,14 @@ export class RegistrationComponent implements OnInit {
     isButtonDisabled = true;
     responseMessage: any = '';
     registrationForm: FormGroup;
+    
+    private url = `${environment.apiUrl}/auth/register`;
 
-    constructor(private common: Commons, private router: Router, private http: HttpClient) { }
+    constructor(private common: Commons, private router: Router, private apiservice: ApiService) { }
 
     ngOnInit(){
         this.registrationForm = new FormGroup({
-            'username': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
+            'username': new FormControl(null, [Validators.required, this.common.noSpecialChars, this.noSpacesValidator().bind(this)]),
             'first_name': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
             'last_name': new FormControl(null, [Validators.required, this.common.noSpecialChars]),
             'date_of_birth': new FormControl(null, Validators.required, this.ageLimit.bind(this)),
@@ -69,42 +71,26 @@ export class RegistrationComponent implements OnInit {
             this.registrationForm.patchValue({ age: this.age });
             this.responseMessage = '';
             this.isSubmitted = true;
-            this.registerUser(this.registrationForm.value).subscribe(
+            const req = this.registrationForm.value;
+            this.apiservice.postData<any>(this.url, req).subscribe(
                 response => {
-                    this.responseMessage = response;
                     this.router.navigate(['/login']);
                 },
-                error => {
-                    console.error('Error during registration:', error);
-                    if (error) {
-                        this.responseMessage = error;
-                        this.isSubmitted = false;
-                    }
-                }
+                (error: HttpErrorResponse) => {
+                    this.isSubmitted = false;
+                    this.responseMessage = error;
+                } 
             );
         }
     }
 
-    registerUser(req: FormData): Observable<any> {
-        const url = `${environment.apiUrl}/auth/register`;
-        return this.http.post<any>(url, req).pipe(
-            map(response => {
-                return response;
-            }),
-            catchError(this.handleErrors)
-        );
-    }
+    noSpacesValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            if (control.value && control.value.includes(' ')) {
+                return { 'noSpaces': true };
+            }
+            return null; 
+        };
+    }    
 
-    private handleErrors(error: HttpErrorResponse): Observable<any> {
-        if (error.status === 422) {
-            const validationErrors = error.error.errors;
-            return throwError(validationErrors);
-        } else {
-            console.error('Unexpected Error:', error);
-        }
-
-        return throwError('Something went wrong. Please try again.');
-    }
-
-      
 }

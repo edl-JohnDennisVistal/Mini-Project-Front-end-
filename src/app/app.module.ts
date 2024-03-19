@@ -14,7 +14,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
-import { AuthInterceptorService } from './auth-interceptor.service';
+
 import { LoadingComponent } from './loading/loading.component';
 import { MatSortModule } from '@angular/material/sort';
 import { ProjectsComponent } from './projects/projects.component';
@@ -22,6 +22,9 @@ import { AddProjectComponent } from './projects/add-project/add-project.componen
 import { ProjectViewComponent } from './projects/project-view/project-view.component';
 import { EditProjectComponent } from './projects/edit-project/edit-project.component';
 import { UserEditComponent } from './user-profile/user-edit/user-edit.component';
+import { HomeComponent } from './home/home.component';
+import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guard';
 
 @NgModule({
     declarations: [
@@ -35,7 +38,8 @@ import { UserEditComponent } from './user-profile/user-edit/user-edit.component'
         AddProjectComponent,
         ProjectViewComponent,
         EditProjectComponent,
-        UserEditComponent
+        UserEditComponent,
+        HomeComponent
     ],
     imports: [
         BrowserModule,
@@ -50,7 +54,8 @@ import { UserEditComponent } from './user-profile/user-edit/user-edit.component'
     ],
     providers: [
         provideAnimationsAsync(),
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
+        AuthService,
+        AuthGuard
     ],
     bootstrap: [AppComponent]
 })
