@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { MatTableModule } from '@angular/material/table';
@@ -23,8 +23,11 @@ import { ProjectViewComponent } from './projects/project-view/project-view.compo
 import { EditProjectComponent } from './projects/edit-project/edit-project.component';
 import { UserEditComponent } from './user-profile/user-edit/user-edit.component';
 import { HomeComponent } from './home/home.component';
-import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
+import { ManagerGuard } from './manager.guard.service';
+import { AdminGuard } from './admin.giuard';
+
 
 @NgModule({
     declarations: [
@@ -54,8 +57,10 @@ import { AuthGuard } from './auth.guard';
     ],
     providers: [
         provideAnimationsAsync(),
+        AuthGuard,
+        ManagerGuard,
         AuthService,
-        AuthGuard
+        AdminGuard
     ],
     bootstrap: [AppComponent]
 })

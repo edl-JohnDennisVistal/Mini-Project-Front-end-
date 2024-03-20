@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Commons } from '../common/common.functions';
-import { AuthService } from '../auth.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+import { environment } from '../../../environment.development';
 
 @Component({
     selector: 'app-login',
@@ -21,7 +21,9 @@ export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     isButtonDisabled: boolean = true;
 
-    constructor(private common: Commons, private authservice: AuthService, private router: Router ) { }
+    private url = `${environment.apiUrl}/auth/login`
+
+    constructor(private common: Commons, private authservice: AuthService) { }
 
     ngOnInit(): void { 
         /* needed to be initialized first before the component */
@@ -51,14 +53,10 @@ export class LoginComponent implements OnInit {
             this.isSubmitted = true;
             this.responseMessage = "";
             const req = this.loginForm.value;
-            this.authservice.login(req).subscribe(
-                response => {
-                    localStorage.setItem('access_token', response.access_token.token);
-                    localStorage.setItem('user_id', response.access_token.user.id);
-                    this.router.navigate(['/home']);
-                }, 
+            this.authservice.login(this.url, req).subscribe(
+                (response) => {},
                 (error: any) => {
-                    this.responseMessage = { message: error };
+                    this.responseMessage = error;
                     this.isSubmitted = false;
                 }
             );

@@ -5,7 +5,7 @@
             <form class="max-w-md mx-auto flex-none" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <h1 class="text-2xl font-bold mb-5">
                     <span>Login</span>
-                    <small class="text-red-600 text-sm block bg-red-100" *ngIf="responseMessage.message">{{ responseMessage?.message }}</small>
+                    <small class="text-red-600 text-sm block bg-red-100" *ngIf="responseMessage">{{ responseMessage }}</small>
                 </h1>
                 <div class="relative z-0 w-full mb-5 group">
                     <input 

@@ -8,6 +8,7 @@ import { UserData } from '../admin-panel/admin-panel.component';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { ApiService } from '../services/api.service';
+import { AuthService } from '../auth.service';
 
 @Component({
     selector: 'app-user-profile',
@@ -30,7 +31,7 @@ export class UserProfileComponent implements OnInit {
     date_of_birth: string = '';
     role: string = '';
     id: number = this.route.snapshot.params['id'];
-    user_id: number = Number(localStorage.getItem('user_id'));
+    user_id: number;
     rawData: any;
     dataSource: any;
     skills: string[] = [];
@@ -45,7 +46,7 @@ export class UserProfileComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort; 
 
-    constructor(private apiservice: ApiService,private route: ActivatedRoute) {  }
+    constructor(private apiservice: ApiService, private route: ActivatedRoute, private authservice: AuthService) {  }
 
     ngOnInit(){
         this.apiservice.getData<any>(this.url).subscribe(
@@ -73,6 +74,11 @@ export class UserProfileComponent implements OnInit {
         this.skillsForm = new FormGroup({
             'skill': new FormControl(null, Validators.required),
         })
+        this.authservice.user$.subscribe(
+            (data) => {
+                this.user_id = data?.id;
+            }
+        )
     }
 
     onSubmit(){

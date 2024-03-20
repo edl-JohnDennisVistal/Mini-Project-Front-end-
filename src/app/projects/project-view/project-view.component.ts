@@ -47,7 +47,6 @@ export class ProjectViewComponent implements OnInit {
             this.end_date = params.end
             this.project = params.project
         })
-        this.checkAdmin();
         this.getMembers();
         this.getAllUsers();
         this.getDiscription();
@@ -81,20 +80,9 @@ export class ProjectViewComponent implements OnInit {
     getAllUsers(){
         this.apiservice.getData<any>(this.urlAllUsers).subscribe(
             data => {
-                console.log(data)
                 this.dataSource = new MatTableDataSource<UserData>(data.data);
                 this.dataSource.paginator = this.paginator;
                 this.dataSource.sort = this.sort;
-            }
-        )
-    }
-
-    checkAdmin() {
-        this.apiservice.getData<any>(this.urlAdminChecker).subscribe(
-            data => {
-                if(data.response) {
-                    this.isAdmin = true;
-                }
             }
         )
     }

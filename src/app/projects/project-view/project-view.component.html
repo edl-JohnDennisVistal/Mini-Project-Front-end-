@@ -25,9 +25,11 @@
     </div>
     <div class="mb-5">
         <h1 class="mb-2 font-bold">Current member working on this project:</h1>
-        <div *ngFor="let user of members" class="bg-gray-300 px-3 py-1 rounded-full inline-block my-1">
-            {{ user.username }}
-            <button class="ml-2 text-gray-500 rounded-full bg-gray-400 px-1" (click)="onDelete(user.id)" *ngIf="isAdmin">X</button>
+        <div class="container-max-w-full space-x-2">
+            <div *ngFor="let user of members" class="bg-gray-300 px-3 py-1 rounded-full inline-block my-1">
+                {{ user.username }}
+                <button class="ml-2 text-gray-500 rounded-full bg-gray-400 px-1" (click)="onDelete(user.id)">X</button>
+            </div>
         </div>
     </div>
     <div class="flex justify-between mt-5 mb-2">
@@ -68,7 +70,7 @@
                 <div class="flex-custom">
                     <button id="view" class="button-common" [routerLink]="['/profile', user.id]">View</button>
                     <span class="mx-1">|</span>
-                    <button id="edit" class="button-common" (click)="onAdd( user.id )" *ngIf="isAdmin">Add</button>
+                    <button id="edit" class="button-common" (click)="onAdd( user.id )">Add</button>
                 </div>
             </td>
         </ng-container>

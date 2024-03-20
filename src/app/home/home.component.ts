@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../services/api.service';
 import { AuthService } from '../auth.service';
-import { environment } from '../../../environment.development';
 
 @Component({
     selector: 'app-home',
@@ -12,21 +10,16 @@ import { environment } from '../../../environment.development';
 export class HomeComponent implements OnInit {
 
     name: string;
-    id: number;
+    id: any;
 
-    private nameApi = `${environment.apiUrl}/auth/name`;
-
-    constructor(private apiservice: ApiService, private authservice: AuthService) { }
+    constructor(private authservice: AuthService) { }
 
     ngOnInit(): void {
-        if(this.authservice.isLoggedIn){
-            this.apiservice.getData<any>(this.nameApi).subscribe(
-                response => {
-                    this.id = response.id;
-                    this.name = response.name;
-                }
-            )
-        }
+        this.authservice.user$.subscribe(
+            (data) => {
+                this.id = data?.id
+            }
+        )
     }
 
 }

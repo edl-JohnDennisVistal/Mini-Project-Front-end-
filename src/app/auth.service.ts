@@ -1,66 +1,76 @@
-import { Injectable } from "@angular/core";
-import { Observable, catchError, map, throwError } from "rxjs";
-import { ApiService } from "./services/api.service";
-import { environment } from "../../environment.development";
-import { Router } from "@angular/router";
-
+import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { ApiService } from './services/api.service';
+import { Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { environment } from '../../environment.development';
 
 @Injectable()
 
 export class AuthService {
 
-    isLoggedIn: boolean = false;
-    isAdminLogIn: boolean = false;
+    private isLoggedIn = new BehaviorSubject<boolean>(false);
+    private user = new BehaviorSubject<any>(null);
+    private manager = new BehaviorSubject<boolean>(false);
+    private admin = new BehaviorSubject<boolean>(false);
+    isloggedIn$ = this.isLoggedIn.asObservable();
+    user$ = this.user.asObservable();
+    manager$ = this.manager.asObservable();
+    admin$ = this.admin.asObservable();
 
-    private loginEndpoint = `${environment.apiUrl}/auth/login`;
-    private urlAdmin = `${environment.apiUrl}/auth/check/admin`;
-    private urlCheck = `${environment.apiUrl}/auth/status/checker`;
-    private urlLogout = `${environment.apiUrl}/auth/logout`;
+    private checkUrl = `${environment.apiUrl}/auth/check`
 
-    constructor(private apiservice: ApiService, private router: Router) {
-        const accessToken = localStorage.getItem('access_token');
-        if (accessToken) {
-            this.isLoggedIn = true;
-            this.isAdmin();
+    constructor(private router: Router ,private apiservice: ApiService) {                
+        if(localStorage.getItem('access_token')) {
+            this.isLoggedIn.next(true);
         }
+        this.authenticate();
     }
 
-    login(req: any): Observable<any> {
-        return this.apiservice.postData<any>(this.loginEndpoint, req).pipe(
+    login(url: string, req: any): Observable<boolean> {
+        return this.apiservice.postData(url, req).pipe(
             map((data: any) => {
-                this.isLoggedIn = true; 
-                this.isAdminLogIn = true;
-                return data;
+                this.isLoggedIn.next(true);
+                localStorage.setItem('access_token', data.access_token.token);
+                this.router.navigate(['/home']);
+                this.user.next(data.access_token.user);
+                if(data.access_token.user.role == 'ROLE_SUPERVISOR'){
+                    this.manager.next(true);
+                }
+                else if(data.access_token.user.role == 'ROLE_ADMIN'){
+                    this.manager.next(true);
+                    this.admin.next(true);
+                }
+                return true;
             }),
-            catchError((error: any) => {
-                return throwError(error);
+            catchError(error => {
+                return throwError(error); 
             })
         );
     }
 
-    logout() {
-        this.apiservice.getData<any>(this.urlLogout).subscribe(
-            data => {
-                if (data.response) {
-                    this.isLoggedIn = false;
-                    this.isAdminLogIn = false;
-                    localStorage.removeItem('access_token');
-                    localStorage.removeItem('user_id');
-                }
+    logout(url: string): void {
+        this.apiservice.getData(url).subscribe(data => {
+            if(data){
+                localStorage.removeItem('access_token');
+                this.isLoggedIn.next(false);
                 this.router.navigate(['/login']);
             }
-        )
+        })
     }
 
-    isAdmin() {
-        this.apiservice.getData<any>(this.urlAdmin).subscribe(
-            response => {
-                if (response.response) {
-                    this.isAdminLogIn = true;
+    authenticate(){
+        this.apiservice.getData<any>(this.checkUrl).subscribe(data => {
+            if(data){
+                this.user.next(data.access_token.user);
+                if(data.access_token.user.role == 'ROLE_SUPERVISOR'){
+                    this.manager.next(true);
+                }
+                else if(data.access_token.user.role == 'ROLE_ADMIN'){
+                    this.manager.next(true);
+                    this.admin.next(true);
                 }
             }
-        )
+        })
     }
-    
 
 }

@@ -1,12 +1,12 @@
 <nav class="bg-blue-950 text-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600 flex justify-between">
     <h1 routerLink="/home" class="cursor-pointer">USM Home</h1>
     <div class="space-x-20">
-        <a class="cursor-pointer" [hidden]="!isLoggedIn && !isAdminLogIn" routerLink="/profile/{{ id }}">My Profile</a>
-        <a class="cursor-pointer" [hidden]="!isLoggedIn && !isAdminLogIn" routerLink="/admin/panel">Admin Panel</a>
-        <a class="cursor-pointer" [hidden]="!isLoggedIn && !isAdminLogIn" routerLink="/projects">Admin Projects</a>
-        <a class="cursor-pointer" [hidden]="isLoggedIn" routerLink="/login">Login</a>
-        <a class="cursor-pointer" [hidden]="isLoggedIn" routerLink="/register">Register</a>
-        <a class="cursor-pointer" [hidden]="!isLoggedIn" (click)="logout()">Logout</a>
+        <a class="cursor-pointer" *ngIf="isLoggedIn" routerLink="/profile/{{ id }}">My Profile</a>
+        <a class="cursor-pointer" *ngIf="isLoggedIn && isManager" routerLink="/admin/panel">Admin Panel</a>
+        <a class="cursor-pointer" *ngIf="isLoggedIn && isManager" routerLink="/projects">Admin Projects</a>
+        <a class="cursor-pointer" *ngIf="!isLoggedIn" routerLink="/login">Login</a>
+        <a class="cursor-pointer" *ngIf="!isLoggedIn" routerLink="/register">Register</a>
+        <a class="cursor-pointer" *ngIf="isLoggedIn" (click)="logout()">Logout</a>
     </div>
 </nav>
 <div class="bg-gray-200 pt-16 h-full">

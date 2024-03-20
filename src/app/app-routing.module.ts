@@ -11,20 +11,25 @@ import { EditProjectComponent } from './projects/edit-project/edit-project.compo
 import { UserEditComponent } from './user-profile/user-edit/user-edit.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './auth.guard';
+import { ManagerGuard } from './manager.guard.service';
+import { AdminGuard } from './admin.giuard';
 
 const routes: Routes = [
 
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegistrationComponent },
-    
+
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-    { path: 'profile/edit', component: UserEditComponent, canActivate: [AuthGuard] },
     { path: 'profile/:id', component: UserProfileComponent, canActivate: [AuthGuard] },
-    { path: 'admin/panel', component: AdminPanelComponent, canActivate: [AuthGuard] },
-    { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
-    { path: 'projects/add', component: AddProjectComponent, canActivate: [AuthGuard] },
-    { path: 'projects/view', component: ProjectViewComponent, canActivate: [AuthGuard] },
-    { path: 'projects/edit', component: EditProjectComponent, canActivate: [AuthGuard] },
+    { path: 'profile/edit', component: UserEditComponent, canActivate: [AuthGuard] },
+
+    { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard, ManagerGuard] },
+    { path: 'admin/panel', component: AdminPanelComponent, canActivate: [AuthGuard, ManagerGuard] },
+    { path: 'projects/view', component: ProjectViewComponent, canActivate: [AuthGuard, ManagerGuard] },
+
+    { path: 'projects/add', component: AddProjectComponent, canActivate: [AuthGuard, ManagerGuard, AdminGuard] },
+    { path: 'projects/edit', component: EditProjectComponent, canActivate: [AuthGuard, ManagerGuard, AdminGuard] },
     
 ];
 

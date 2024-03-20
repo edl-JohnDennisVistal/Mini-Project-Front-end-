@@ -5,12 +5,12 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 
-export class AuthGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
 
     constructor(private authservice: AuthService) {}
 
     canActivate(): Observable<boolean> {
-        return this.authservice.isloggedIn$.pipe(
+        return this.authservice.admin$.pipe(
             map((data) => {
                 if(data) {
                     return true; 
