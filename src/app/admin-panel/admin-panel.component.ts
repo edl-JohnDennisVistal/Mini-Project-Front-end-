@@ -5,6 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ApiService } from '../services/api.service';
+import { AuthService } from '../auth.service';
 
 export interface UserData {
     id: number;
@@ -27,6 +28,7 @@ export class AdminPanelComponent implements OnInit {
     id: string;
     isDeleting: boolean = false;
     userId: string;//this is for loading delete button. If not an owner of account cant delete.
+    isadmin: boolean;
 
     private urlAdminPanel = `${environment.apiUrl}/auth/admin/panel`;
     private urlDeleteUser = `${environment.apiUrl}/auth/admin/panel/delete/`;
@@ -34,10 +36,15 @@ export class AdminPanelComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort; 
 
-    constructor(private apiservices: ApiService) { }
+    constructor(private apiservices: ApiService, private authservice: AuthService) { }
 
     ngOnInit(): void {
         this.fetchData();
+        this.authservice.admin$.subscribe(
+            data => {
+                this.isadmin = data;
+            }
+        )
     }
 
     fetchData() {

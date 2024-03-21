@@ -21,8 +21,8 @@ const routes: Routes = [
     { path: 'register', component: RegistrationComponent },
 
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-    { path: 'profile/:id', component: UserProfileComponent, canActivate: [AuthGuard] },
     { path: 'profile/edit', component: UserEditComponent, canActivate: [AuthGuard] },
+    { path: 'profile/:id', component: UserProfileComponent, canActivate: [AuthGuard] },
 
     { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard, ManagerGuard] },
     { path: 'admin/panel', component: AdminPanelComponent, canActivate: [AuthGuard, ManagerGuard] },

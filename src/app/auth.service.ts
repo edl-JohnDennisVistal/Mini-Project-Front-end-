@@ -20,9 +20,6 @@ export class AuthService {
     private checkUrl = `${environment.apiUrl}/auth/check`
 
     constructor(private router: Router ,private apiservice: ApiService) {                
-        if(localStorage.getItem('access_token')) {
-            this.isLoggedIn.next(true);
-        }
         this.authenticate();
     }
 
@@ -53,6 +50,8 @@ export class AuthService {
             if(data){
                 localStorage.removeItem('access_token');
                 this.isLoggedIn.next(false);
+                this.admin.next(false);
+                this.manager.next(false);
                 this.router.navigate(['/login']);
             }
         })
@@ -61,6 +60,7 @@ export class AuthService {
     authenticate(){
         this.apiservice.getData<any>(this.checkUrl).subscribe(data => {
             if(data){
+                this.isLoggedIn.next(true);
                 this.user.next(data.access_token.user);
                 if(data.access_token.user.role == 'ROLE_SUPERVISOR'){
                     this.manager.next(true);
