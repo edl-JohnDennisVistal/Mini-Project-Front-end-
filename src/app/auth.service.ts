@@ -60,6 +60,7 @@ export class AuthService {
     authenticate(){
         this.apiservice.getData<any>(this.checkUrl).subscribe(data => {
             if(data){
+                this.router.navigate(['/home']);
                 this.isLoggedIn.next(true);
                 this.user.next(data.access_token.user);
                 if(data.access_token.user.role == 'ROLE_SUPERVISOR'){

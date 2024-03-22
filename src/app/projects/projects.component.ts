@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
+import { AuthService } from '../auth.service';
 
 @Component({
     selector: 'app-projects',
@@ -19,6 +20,7 @@ export class ProjectsComponent implements OnInit {
     dataSource: any;
     rawData: any;
     userId = localStorage.getItem('user_id');
+    isAdmin: boolean;
 
     private urlFetchProjects = `${environment.apiUrl}/auth/fetch/projects`;
     private urlProjectDelete = `${environment.apiUrl}/auth/project/delete/`;
@@ -26,10 +28,11 @@ export class ProjectsComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
-    constructor(private router: Router, private apiservice: ApiService) {  }
+    constructor(private router: Router, private apiservice: ApiService, private authservice: AuthService) {  }
 
     ngOnInit(): void { 
         this.fetchData();
+        this.authservice.admin$.subscribe((isadmin) => { this.isAdmin = isadmin });
     }
 
     fetchData() {

@@ -1,4 +1,4 @@
-<div class="container pt-5 md:px-20 relative">    
+<div class="container-max-w-full pt-5 md:px-20 relative">    
     <h1 class="text-4xl font-bold mb-10">User Profile</h1>
     <div class="flex justify-between">
         <h2 class="text-2xl font-bold mb-5">User Details</h2>
@@ -49,10 +49,10 @@
             <h1 class="text-2xl font-bold">Skills</h1>
             <div class="flex ml-10" *ngIf="id == user_id">
                 <form [formGroup]="skillsForm">
-                    <select formControlName="skill">
+                    <select formControlName="skill" class="rounded-l-full py-1.5">
                         <option *ngFor="let skill of skills" value="{{ skill.id }}">{{ skill.skill }}</option>
                     </select>
-                    <button type="submit" (click)="onAddSkill()">Add</button>
+                    <button type="submit" (click)="onAddSkill()" class="rounded-r-full px-2 py-1 bg-blue-400 text-white">Add</button>
                 </form>
             </div>
         </div>

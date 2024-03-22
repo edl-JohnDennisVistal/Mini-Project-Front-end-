@@ -24,6 +24,7 @@ export class UserEditComponent implements OnInit {
     isButtonDisabled = true;
     responseMessage: any = '';
     editForm: FormGroup;
+    useId: any;
 
     private url = `${environment.apiUrl}/auth/update/user/details`;
     private urlDefVal = `${environment.apiUrl}/auth/profile/self`;
@@ -47,6 +48,7 @@ export class UserEditComponent implements OnInit {
             response => {
                 const dateObject = new Date(response.data.user_details[0].date_of_birth);
                 const formattedDate = dateObject.toISOString().slice(0, 10);
+                this.useId = response.data.id;
                 this.editForm.patchValue({
                     'username': response.data.username,
                     'first_name': response.data.user_details[0].first_name,
@@ -92,7 +94,7 @@ export class UserEditComponent implements OnInit {
             const req = this.editForm.value;
             this.apiservice.putData<any>(this.url, req).subscribe(
                 response => {
-                    this.router.navigate(['/profile/' + localStorage.getItem('user_id')]);
+                    this.router.navigate(['/profile/' + this.useId]);
                 },
                 error => {
                     console.error('Error during registration:', error);
