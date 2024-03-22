@@ -70,7 +70,14 @@
                 <div class="flex-custom">
                     <button id="view" class="button-common" [routerLink]="['/profile', user.id]">View</button>
                     <span class="mx-1">|</span>
-                    <button id="edit" class="button-common" (click)="onAdd( user.id )">Add</button>
+                    <button 
+                        id="edit" 
+                        class="button-common" 
+                        (click)="onAdd( user.id )"
+                        [class.bg-gray-300]="user.projects === 1"
+                        [disabled]="user.projects === 1"
+                        [ngClass]="{'opacity-50 cursor-not-allowed no-hover': user.projects === 1}"
+                    >Add</button>
                 </div>
             </td>
         </ng-container>

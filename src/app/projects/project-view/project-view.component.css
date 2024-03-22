@@ -33,3 +33,6 @@
 .dark-gray{
     background-color: #ebebeb !important;
 }
+.no-hover {
+    pointer-events: none;
+}

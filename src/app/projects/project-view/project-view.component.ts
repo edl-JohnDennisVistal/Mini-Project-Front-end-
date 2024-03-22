@@ -30,7 +30,6 @@ export class ProjectViewComponent implements OnInit {
     private urlProjectMember = `${environment.apiUrl}/auth/project/members/`;
     private urlAllUsers = `${environment.apiUrl}/auth/admin/panel`;
     private urlProjectAddMember = `${environment.apiUrl}/auth/project/members/add`;
-    private urlAdminChecker = `${environment.apiUrl}/auth/check/admin`;
     private urlProjectDescription = `${environment.apiUrl}/auth/project/description/`;
     private urlDeleteMember = `${environment.apiUrl}/auth/project/members/delete/`;
     
@@ -48,7 +47,6 @@ export class ProjectViewComponent implements OnInit {
             this.project = params.project
         })
         this.getMembers();
-        this.getAllUsers();
         this.getDiscription();
     }
 
@@ -73,6 +71,7 @@ export class ProjectViewComponent implements OnInit {
         this.apiservice.getData<any>(this.urlProjectMember + this.project_id).subscribe(
             data => {
                 this.members = data.response[0].users;
+                this.getAllUsers();
             }
         )
     }
