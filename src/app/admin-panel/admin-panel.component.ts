@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild, viewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { environment } from '../../../environment.development';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../auth.service';
+import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 
 export interface UserData {
     id: number;
@@ -29,12 +29,14 @@ export class AdminPanelComponent implements OnInit {
     isDeleting: boolean = false;
     userId: string;//this is for loading delete button. If not an owner of account cant delete.
     isadmin: boolean;
+    url: string;
 
     private urlAdminPanel = `${environment.apiUrl}/auth/admin/panel`;
     private urlDeleteUser = `${environment.apiUrl}/auth/admin/panel/delete/`;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort; 
+    @ViewChild(DeleteModalComponent, { static: true }) deletemodalcomponent: DeleteModalComponent;
 
     constructor(private apiservices: ApiService, private authservice: AuthService) { }
 
@@ -46,7 +48,6 @@ export class AdminPanelComponent implements OnInit {
             }
         )
     }
-
     fetchData() {
         this.apiservices.getData<any>(this.urlAdminPanel).subscribe(
             (response) => {
@@ -65,14 +66,11 @@ export class AdminPanelComponent implements OnInit {
     deleteUser(id: string) {
         this.isDeleting = true;
         this.userId = id;
-        this.apiservices.deleteData<any>(this.urlDeleteUser + id).subscribe(
-            (response) => {
-                this.fetchData();
-            },
-            (error) => {
-                console.error('Error deleting user:', error);
-            }
-        )
+        this.url = this.urlDeleteUser + id;
+    }
+    deleted(isDeleted: boolean) {
+        this.isDeleting = isDeleted;
+        this.fetchData();
     }
     /** 
      *  Searching

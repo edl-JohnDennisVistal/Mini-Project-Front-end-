@@ -20,7 +20,9 @@ export class AuthService {
     private checkUrl = `${environment.apiUrl}/auth/check`
 
     constructor(private router: Router ,private apiservice: ApiService) {                
-        this.authenticate();
+        if(localStorage.getItem('access_token')){
+            this.authenticate();
+        }
     }
 
     login(url: string, req: any): Observable<boolean> {

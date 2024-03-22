@@ -21,6 +21,8 @@ export class ProjectsComponent implements OnInit {
     rawData: any;
     userId = localStorage.getItem('user_id');
     isAdmin: boolean;
+    isDeleting: boolean = false;
+    url: string;
 
     private urlFetchProjects = `${environment.apiUrl}/auth/fetch/projects`;
     private urlProjectDelete = `${environment.apiUrl}/auth/project/delete/`;
@@ -60,13 +62,14 @@ export class ProjectsComponent implements OnInit {
         const queryParams = { id: id, owner: owner, project: project, start: start, end: end, description: description };
         this.router.navigate(['/projects/edit/'], { queryParams });
     }   
-
-    deleteUser(id: number){
-        this.apiservice.deleteData<any>(this.urlProjectDelete + id).subscribe(
-            response => {
-                this.fetchData();
-            }
-        )
+    deleteUser(id: string) {
+        this.isDeleting = true;
+        this.userId = id;
+        this.url = this.urlProjectDelete + id;
+    }
+    deleted(isDeleted: boolean) {
+        this.isDeleting = isDeleted;
+        this.fetchData();
     }
 
 }

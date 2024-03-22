@@ -27,6 +27,7 @@ import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { ManagerGuard } from './manager.guard.service';
 import { AdminGuard } from './admin.giuard';
+import { DeleteModalComponent } from './delete-modal/delete-modal.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { AdminGuard } from './admin.giuard';
         ProjectViewComponent,
         EditProjectComponent,
         UserEditComponent,
-        HomeComponent
+        HomeComponent,
+        DeleteModalComponent
     ],
     imports: [
         BrowserModule,
