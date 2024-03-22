@@ -99,4 +99,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
     <mat-paginator [pageSizeOptions]="[2]" showFirstLastButtons></mat-paginator>
+    <div class="absolute inset-0 flex justify-center items-center" *ngIf="isDeleting">
+        <app-delete-modal [url]="url" (isDeleting)="deleted($event)"></app-delete-modal>
+    </div>
 </div>

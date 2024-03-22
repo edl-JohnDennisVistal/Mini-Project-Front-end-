@@ -9,6 +9,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../auth.service';
+import { DeleteService } from '../services/delete.service';
 
 @Component({
     selector: 'app-user-profile',
@@ -36,6 +37,7 @@ export class UserProfileComponent implements OnInit {
     dataSource: any;
     skills: string[] = [];
     userSkills: string[] = [];
+    isDeleting: boolean = false;
 
     private url = `${environment.apiUrl}/auth/user/details/${this.id}`;
     private urlSkills = `${environment.apiUrl}/auth/skills/${this.id}`;
@@ -98,16 +100,15 @@ export class UserProfileComponent implements OnInit {
             }
         )
     }
-
-    onDelete(id: number){
-        this.apiservice.deleteData<any>(`${this.urlDeleteSkill}/${id}`).subscribe(
-            (respose) => {
-                this.getUserSkills();
-                this.getDefaultSkills();
-            }
-        )
+    onDelete(id: string) {
+        this.isDeleting = true;
+        this.url = this.urlDeleteSkill + '/' + id;
     }
-
+    deleted(isDeleted: boolean) {
+        this.isDeleting = isDeleted;
+        this.getUserSkills();
+        this.getDefaultSkills();
+    }
     getDefaultSkills(){
         this.apiservice.getData<any>(this.urlSkills).subscribe(
             (response) => {

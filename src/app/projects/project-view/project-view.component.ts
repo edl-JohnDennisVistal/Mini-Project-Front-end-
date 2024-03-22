@@ -26,6 +26,8 @@ export class ProjectViewComponent implements OnInit {
     members: [];
     isAdmin: boolean = false;
     discription: string = " ";
+    url: string;
+    isDeleting: boolean = false;
 
     private urlProjectMember = `${environment.apiUrl}/auth/project/members/`;
     private urlAllUsers = `${environment.apiUrl}/auth/admin/panel`;
@@ -93,13 +95,13 @@ export class ProjectViewComponent implements OnInit {
             }
         )
     }
-
-    onDelete($id: number) {
-        this.apiservice.deleteData<any>(this.urlDeleteMember + $id).subscribe(
-            data => {
-                this.getMembers();
-            }
-        )
+    onDelete(id: string) {
+        this.isDeleting = true;
+        this.url = this.urlDeleteMember + id;
+    }
+    deleted(isDeleted: boolean) {
+        this.isDeleting = isDeleted;
+        this.getMembers();
     }
 
 }
